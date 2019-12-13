@@ -1,26 +1,25 @@
 package com.chabokpush.cordova;
 
 import android.content.Context;
-import java.util.HashMap;
 import android.net.Uri;
+import android.util.Log;
 
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CallbackContext;
-
-import org.apache.cordova.PluginResult;
-
-import com.adpdigital.push.AdpPushClient;
+import com.adpdigital.push.AppState;
 import com.adpdigital.push.Callback;
 import com.adpdigital.push.ConnectionStatus;
+import com.adpdigital.push.config.Environment;
+import com.adpdigital.push.LogLevel;
 import com.adpdigital.push.PushMessage;
-import com.adpdigital.push.AppState;
 
-
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,25 +35,27 @@ public class ChabokPush extends CordovaPlugin {
     private CallbackContext onConnectionStatusCallbackContext;
 
     @Override
+    protected void pluginInitialize() {
+        final Context context = this.cordova.getActivity().getApplicationContext();
+        this.cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                Log.d(TAG, "Starting Chabok plugin");
+                AdpPushClient.setApplicationContext(context);
+            }
+        });
+    }
+
+    @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         android.util.Log.d(TAG, "----------- execute: action = " + action + " , args = " + args);
 
-        if (action.equals("init")){
-            String appId = args.getString(0);
-            String apiKey = args.getString(1);
-            String username = args.getString(2);
-            String password = args.getString(3);
-            boolean devMode = args.getBoolean(4);
-
-            init(appId, apiKey, username, password, devMode, callbackContext);
-
+        if (action.equals("configureEnvironment")) {
+            boolean devMode = args.getBoolean(0);
+            configureEnvironment(devMode, callbackContext);
             return true;
-        } else if (action.equals("registerAsGuest")){
-            registerAsGuest(callbackContext);
-            return true;
-        } else if (action.equals("register")){
+        } else if (action.equals("login")) {
             String userId = args.getString(0);
-            register(userId, callbackContext);
+            login(userId, callbackContext);
             return true;
         } else if (action.equals("getUserId")){
             getUserId(callbackContext);
@@ -74,8 +75,8 @@ public class ChabokPush extends CordovaPlugin {
 
             appWillOpenUrl(url);
             return true;
-        } else if (action.equals("unregister")){
-            unregister();
+        } else if (action.equals("logout")) {
+            logout();
             return true;
         } else if (action.equals("addTag")){
             String tagName = args.getString(0);
@@ -87,10 +88,10 @@ public class ChabokPush extends CordovaPlugin {
 
             removeTag(tagName, callbackContext);
             return true;
-        } else if (action.equals("setUserInfo")){
+        } else if (action.equals("setUserAttributes")) {
             JSONObject userInfo = args.getJSONObject(0);
 
-            setUserInfo(userInfo);
+            setUserAttributes(userInfo);
             return true;
         } else if (action.equals("track")){
             String trackName = args.getString(0);
@@ -108,43 +109,31 @@ public class ChabokPush extends CordovaPlugin {
         return false;
     }
 
-    public void init(String appId, String apiKey, String username, String password,
-                     boolean devMode, CallbackContext callbackContext) {
-        Class activityClass = this.cordova.getActivity().getClass();
-        Context context = getApplicationContext();
+    public void configureEnvironment(boolean devMode, CallbackContext callbackContext) {
+        AdpPushClient.setApplicationContext(getApplicationContext());
+        AdpPushClient.configureEnvironment(devMode ? Environment.SANDBOX : Environment.PRODUCTION);
+        AdpPushClient.setLogLevel(LogLevel.VERBOSE);
 
-        AdpPushClient chabok = AdpPushClient.init(
-                context,
-                activityClass,
-                appId,
-                apiKey,
-                username,
-                password
-        );
-
+        AdpPushClient chabok = AdpPushClient.get();
         if (chabok != null) {
             android.util.Log.d(TAG, "init: Initilized sucessfully");
-
             callbackContext.success("Initilized sucessfully");
         } else {
             android.util.Log.d(TAG, "Could not init chabok parameters");
-
             callbackContext.error("Could not init chabok parameters");
             return;
         }
 
-        chabok.setDevelopment(devMode);
         chabok.addListener(this);
     }
 
-    public void registerAsGuest(CallbackContext callbackContext) {
+    public void login(String userId, CallbackContext callbackContext) {
         this.onRegisterCallbackContext = callbackContext;
-        AdpPushClient.get().registerAsGuest();
+        AdpPushClient.get().login(userId);
     }
 
-    public void register(String userId, CallbackContext callbackContext) {
-        this.onRegisterCallbackContext = callbackContext;
-        AdpPushClient.get().register(userId);
+    public void logout() {
+        AdpPushClient.get().logout();
     }
 
     public void publish(JSONObject message, CallbackContext callbackContext) {
@@ -191,10 +180,6 @@ public class ChabokPush extends CordovaPlugin {
             e.printStackTrace();
             callbackContext.error(e.getMessage());
         }
-    }
-
-    public void unregister(){
-        AdpPushClient.get().unregister();
     }
 
     public void track(String trackName, JSONObject data){
@@ -246,11 +231,11 @@ public class ChabokPush extends CordovaPlugin {
         AdpPushClient.get().appWillOpenUrl(uri);
     }
 
-    public void setUserInfo(JSONObject userInfo){
+    public void setUserAttributes(JSONObject userInfo) {
         try {
             HashMap<String, Object> userInfoMap = (HashMap<String, Object>) jsonToMap(userInfo);
-            AdpPushClient.get().setUserInfo(userInfoMap);
-        } catch (Exception e){
+            AdpPushClient.get().setUserAttributes(userInfoMap);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

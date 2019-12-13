@@ -1,17 +1,21 @@
-repositories{
-  jcenter()
-  flatDir {
-      dirs 'libs'
-   }
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
-   implementation(name:'chabok-lib-2.16.0', ext:'aar')
+    implementation(name:'chabok-lib-3.1.0', ext:'aar')
 }
 
 android {
-  packagingOptions {
-    exclude 'META-INF/NOTICE'
-    exclude 'META-INF/LICENSE'
-  }
+    packagingOptions {
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
 }
+
+cdvPluginPostBuildExtras.add({
+    apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'io.chabok.plugin.chabok-services'
+})

@@ -1,88 +1,92 @@
+var exec = require('cordova/exec');
 
 const  bridgeName = 'ChabokPush';
-
 var ChabokPush = function () {}
 
-
-ChabokPush.prototype.init = function (options, success, error) {
-    var params = Array.from(Object.values(options), k => k);
-    cordova.exec(success, error, bridgeName, 'init', params);
+ChabokPush.prototype.configureEnvironment = function (devMode, success, error) {
+    exec(success, error, bridgeName, 'configureEnvironment', [devMode]);
 };
 
-ChabokPush.prototype.registerAsGuest = function (success, error) {
-    cordova.exec(success, error, bridgeName, 'registerAsGuest');
+ChabokPush.prototype.login = function (userId, success, error) {
+    exec(success, error, bridgeName, 'login', [userId]);
 };
 
-ChabokPush.prototype.register = function (userId, success, error) {
-    cordova.exec(success, error, bridgeName, 'register', [userId]);
-};
-
-ChabokPush.prototype.unregister = function () {
-    cordova.exec(function () {
+ChabokPush.prototype.logout = function () {
+    exec(function () {
     }, function () {
-    }, bridgeName, 'unregister', []);
+    }, bridgeName, 'logout', []);
 };
 
 ChabokPush.prototype.addTag = function (tagName, success, error) {
-    cordova.exec(success, error, bridgeName, 'addTag', [tagName]);
+    exec(success, error, bridgeName, 'addTag', [tagName]);
 };
 
 ChabokPush.prototype.removeTag = function (tagName, success, error) {
-    cordova.exec(success, error, bridgeName, 'removeTag', [tagName]);
+    exec(success, error, bridgeName, 'removeTag', [tagName]);
 };
 
 ChabokPush.prototype.appWillOpenUrl = function (url) {
-    cordova.exec(function () {
+    exec(function () {
     }, function () {
     }, bridgeName, 'appWillOpenUrl', [url]);
 };
 
+ChabokPush.prototype.getUserAttributes = function (success, error) {
+    exec(success, error, bridgeName, 'getUserAttributes', []);
+};
+
+ChabokPush.prototype.setUserAttributes = function (userInfo) {
+    exec(function () {
+    }, function () {
+    }, bridgeName, 'setUserAttributes', [userInfo]);
+};
+
 ChabokPush.prototype.getUserInfo = function (success, error) {
-    cordova.exec(success, error, bridgeName, 'getUserInfo', []);
+    exec(success, error, bridgeName, 'getUserAttributes', []);
 };
 
 ChabokPush.prototype.setUserInfo = function (userInfo) {
-    cordova.exec(function () {
+    exec(function () {
     }, function () {
-    }, bridgeName, 'setUserInfo', [userInfo]);
+    }, bridgeName, 'setUserAttributes', [userInfo]);
 };
 
 ChabokPush.prototype.setDefaultTracker = function (trackerName) {
-    cordova.exec(function () {
+    exec(function () {
     }, function () {
     }, bridgeName, 'setDefaultTracker', [trackerName]);
 };
 
 ChabokPush.prototype.track = function (trackName, data) {
-    cordova.exec(function () {
+    exec(function () {
     }, function () {
     }, bridgeName, 'track', [trackName, data]);
 };
 
 ChabokPush.prototype.resetBadge = function () {
-    cordova.exec(function () {
+    exec(function () {
     }, function () {
     }, bridgeName, 'resetBadge', []);
 };
 
 ChabokPush.prototype.publish = function (message, success, error) {
-    cordova.exec(success, error, bridgeName, 'publish', [message]);
+    exec(success, error, bridgeName, 'publish', [message]);
 };
 
 ChabokPush.prototype.getUserId = function (success, error) {
-    cordova.exec(success, error, bridgeName, 'getUserId', []);
+    exec(success, error, bridgeName, 'getUserId', []);
 };
 
 ChabokPush.prototype.getInstallationId = function (success, error) {
-    cordova.exec(success, error, bridgeName, 'getInstallationId', []);
+    exec(success, error, bridgeName, 'getInstallationId', []);
 };
 
 ChabokPush.prototype.setOnMessageCallback = function (oneMessage) {
-    cordova.exec(oneMessage, function () {}, bridgeName, 'setOnMessageCallback', []);
+    exec(oneMessage, function () {}, bridgeName, 'setOnMessageCallback', []);
 };
 
 ChabokPush.prototype.setOnConnectionStatusCallback = function (onConnection) {
-    cordova.exec(onConnection, function () {}, bridgeName, 'setOnConnectionStatusCallback', []);
+    exec(onConnection, function () {}, bridgeName, 'setOnConnectionStatusCallback', []);
 };
 
 
