@@ -7,10 +7,10 @@
     "is_top_level": true,
     "variables": {}
   },
-  "com.chabokpush.cordova": {
+  "io.chabok.cordovaplugin": {
     "source": {
-      "type": "local",
-      "path": "/Users/husseinhj/Documents/cordova/adp-push-client-cordova/chabok-starter-cordova/node_modules/com.chabokpush.cordova"
+      "type": "registry",
+      "id": "io.chabok.cordovaplugin"
     },
     "is_top_level": true,
     "variables": {}

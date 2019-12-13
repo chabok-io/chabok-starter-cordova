@@ -8,10 +8,10 @@
   },
   "installed_plugins": {
     "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "com.chabokpush.starter.cordova"
+      "PACKAGE_NAME": "com.adpdigital.chabok.starter"
     },
-    "com.chabokpush.cordova": {
-      "PACKAGE_NAME": "com.chabokpush.starter.cordova"
+    "io.chabok.cordovaplugin": {
+      "PACKAGE_NAME": "com.adpdigital.chabok.starter"
     }
   },
   "dependent_plugins": {}
