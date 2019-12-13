@@ -28,7 +28,7 @@
         <config-file target="AndroidManifest.xml" parent="/*" />
         <source-file src="src/android/ChabokPush.java"
                      target-dir="src/com/chabokpush/cordova/ChabokPush"/>
-        <source-file src="src/android/ChabokApplication.java"
+        <source-file src="src/android/MyAppClass.java"
                      target-dir="rc/com/chabokpush/cordova/ChabokPush" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
