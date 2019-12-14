@@ -1,6 +1,6 @@
 {
   "name": "com.chabokpush.cordova",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "ChabokPush Realtime messaging",
   "cordova": {
     "id": "com.chabokpush.cordova",
