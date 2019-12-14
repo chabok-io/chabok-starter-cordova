@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="io.chabok.cordovaplugin"
-        version="1.1.4"
+<plugin id="com.chabokpush.cordova"
+        version="1.0.0"
         xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android">
     <name>ChabokPush</name>
@@ -21,15 +21,15 @@
                      target="res/xml/config.xml">
             <feature name="ChabokPush">
                 <param name="android-package"
-                       value="io.chabok.cordovaplugin.ChabokPush"/>
+                       value="com.chabokpush.cordova.ChabokPush"/>
                 <param name="onload" value="true" />
             </feature>
         </config-file>
         <config-file target="AndroidManifest.xml" parent="/*" />
         <source-file src="src/android/ChabokPush.java"
-                     target-dir="src/io/chabok/cordovaplugin/ChabokPush"/>
+                     target-dir="src/com/chabokpush/cordova/ChabokPush"/>
         <source-file src="src/android/MyAppClass.java"
-                     target-dir="src/io/chabok/cordovaplugin/ChabokPush" />
+                     target-dir="src/com/chabokpush/cordova/ChabokPush" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <meta-data android:name="com.adpdigital.push.client.PlatformType"

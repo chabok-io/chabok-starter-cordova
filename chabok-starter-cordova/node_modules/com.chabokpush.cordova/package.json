@@ -1,16 +1,16 @@
 {
-  "_from": "io.chabok.cordovaplugin",
-  "_id": "io.chabok.cordovaplugin@1.1.4",
+  "_from": "com.chabokpush.cordova",
+  "_id": "com.chabokpush.cordova@1.0.0",
   "_inBundle": false,
-  "_integrity": "sha512-XrcDa7HoGqCVCWqt0RAaSHzzAVvqRFDA44D0P1iIJwd5vZNfKn4ul64neDF6hug0GFNL2ax+XMOs7DInqJCtFQ==",
-  "_location": "/io.chabok.cordovaplugin",
+  "_integrity": "sha512-sTy5VRL3aKLo5IzsjArn1kb7WxBsNcAsixlZzSKMG8kQ5KPZiY8fJ8XJ/MmPOGcH96+htAo+NtcBmHXGQ93Lmg==",
+  "_location": "/com.chabokpush.cordova",
   "_phantomChildren": {},
   "_requested": {
     "type": "tag",
     "registry": true,
-    "raw": "io.chabok.cordovaplugin",
-    "name": "io.chabok.cordovaplugin",
-    "escapedName": "io.chabok.cordovaplugin",
+    "raw": "com.chabokpush.cordova",
+    "name": "com.chabokpush.cordova",
+    "escapedName": "com.chabokpush.cordova",
     "rawSpec": "",
     "saveSpec": null,
     "fetchSpec": "latest"
@@ -19,16 +19,16 @@
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/io.chabok.cordovaplugin/-/io.chabok.cordovaplugin-1.1.4.tgz",
-  "_shasum": "170fa25fe1dc267f4d512758e9b05385e662a593",
-  "_spec": "io.chabok.cordovaplugin",
+  "_resolved": "https://registry.npmjs.org/com.chabokpush.cordova/-/com.chabokpush.cordova-1.0.0.tgz",
+  "_shasum": "66ea1acc726cfb92694b06b394973d7fc971e898",
+  "_spec": "com.chabokpush.cordova",
   "_where": "/Users/farbod/Documents/Github/chabok/chabok-starter-cordova/chabok-starter-cordova",
   "author": {
     "name": "Chabok Realtime Solutions"
   },
   "bundleDependencies": false,
   "cordova": {
-    "id": "io.chabok.cordovaplugin",
+    "id": "com.chabokpush.cordova",
     "platforms": [
       "android",
       "ios"
@@ -42,6 +42,6 @@
     "cordova-ios"
   ],
   "license": "ISC",
-  "name": "io.chabok.cordovaplugin",
-  "version": "1.1.4"
+  "name": "com.chabokpush.cordova",
+  "version": "1.0.0"
 }

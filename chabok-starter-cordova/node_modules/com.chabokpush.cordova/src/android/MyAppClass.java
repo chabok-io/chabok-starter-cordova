@@ -1,4 +1,4 @@
-package io.chabok.cordovaplugin;
+package com.chabokpush.cordova;
 
 import android.app.Application;
 

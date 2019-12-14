@@ -7,10 +7,10 @@
     "is_top_level": true,
     "variables": {}
   },
-  "io.chabok.cordovaplugin": {
+  "com.chabokpush.cordova": {
     "source": {
       "type": "registry",
-      "id": "io.chabok.cordovaplugin"
+      "id": "com.chabokpush.cordova"
     },
     "is_top_level": true,
     "variables": {}
