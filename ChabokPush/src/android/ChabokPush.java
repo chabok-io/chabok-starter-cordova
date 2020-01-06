@@ -1,4 +1,4 @@
-package com.chabokpush.cordova;
+package com.chabokpush.cordova.ChabokPush;
 
 import android.content.Context;
 import android.net.Uri;

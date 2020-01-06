@@ -8,14 +8,28 @@
                src="www/ChabokPush.js">
         <clobbers target="ChabokPush"/>
     </js-module>
+
+    <preference name="CHABOK_LOGLEVEL" default="VERBOSE"/>
+    <preference name="CHABOK_ENVIRONMENT" default="SANDBOX"/>
+
     <platform name="android">
+
+        <!-- START HOOKS -->
+        <hook type="before_plugin_install"  src="hooks/after_prepare.js"/>
+        <hook type="after_plugin_install" src="hooks/androidBeforeInstallAndroidManifest.js" />
+        <hook type="after_plugin_install" src="hooks/androidBeforeInstallMyApplication.js" />
+
+        <hook type="before_plugin_uninstall" src="hooks/removePluginAndroid.js" />
+        <hook type="before_plugin_uninstall" src="hooks/androidBeforeInstallAndroidManifest.js" />
+        <!-- END HOOKS -->
+
+        <!-- START Add frameworks -->
         <framework src="me.leolin:ShortcutBadger:1.1.22@aar" />
         <framework src="com.google.firebase:firebase-messaging:17.1.0" />
         <framework src="com.android.installreferrer:installreferrer:1.0" />
         <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
-        <source-file framework="true"
-                     src="src/android/libs/chabok-lib-3.1.0.aar"
-                     target-dir="libs"/>
+        <framework src="com.adpdigital.push:chabok-lib:3.1.1" />
+        <!-- END Add frameworks -->
 
         <config-file parent="/*"
                      target="res/xml/config.xml">
@@ -25,6 +39,7 @@
                 <param name="onload" value="true" />
             </feature>
         </config-file>
+
         <config-file target="AndroidManifest.xml" parent="/*" />
         <source-file src="src/android/ChabokPush.java"
                      target-dir="src/com/chabokpush/cordova/ChabokPush"/>
@@ -43,8 +58,19 @@
                 </intent-filter>
             </receiver>
         </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+        </config-file>
+
     </platform>
     <platform name="ios">
+
+        <hook type="after_plugin_install" src="hooks/iosAfterInstallAppDelegate.js" />
+        <hook type="before_plugin_uninstall" src="hooks/iosAfterInstallAppDelegate.js" />
+
         <config-file parent="/*"
                      target="config.xml">
             <feature name="ChabokPush">
@@ -53,7 +79,27 @@
                 <param name="onload" value="true" />
             </feature>
         </config-file>
+
         <source-file src="src/ios/ChabokPush.m"/>
+
+        <!-- START Configure Push Notification permission -->
+        <config-file parent="aps-environment" target="*/Entitlements-Debug.plist">
+            <string>development</string>
+        </config-file>
+        <config-file parent="aps-environment" target="*/Entitlements-Release.plist">
+            <string>production</string>
+        </config-file>
+        <!-- End Configure Push Notification permission -->
+
+        <!-- START Add OS Frameworks -->
+        <framework src="AdSupport.framework" weak="true" />
+        <framework src="iAd.framework" weak="true" />
+        <!-- END Add OS Frameworks -->
+
+        <!-- START Copy resources -->
+        <resource-file src="src/ios/Chabok.sandbox.plist"/>
+        <resource-file src="src/ios/Chabok.production.plist"/>
+        <!-- END Copy resources -->
 
         <config-file target="*-Info.plist" parent="UIBackgroundModes">
             <array>
@@ -71,7 +117,7 @@
                 <source url="https://github.com/CocoaPods/Specs.git"/>
             </config>
             <pods use-frameworks="true">
-                <pod name="ChabokPush" spec="~> 2.0.1"/>
+                <pod name="ChabokPush" spec="~> 2.1.0"/>
             </pods>
         </podspec>
     </platform>
