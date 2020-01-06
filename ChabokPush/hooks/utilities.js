@@ -44,11 +44,18 @@ module.exports = {
         for (let i = 0; i < platform.src.length; i++) {
             const file = platform.src[i];
 
+            if (!this.fileExists(file) && path.basename(file).includes('Chabok.') && type === 'iOS') {
+                console.log('(⛔️) Could not find ' + path.basename(file) +
+                    ' in root of project. Create fake config file with INVALID-FILE value');
+                fs.writeFileSync(file, 'INVALID-FILE');
+            }
+
             if (this.fileExists(file)) {
                 try {
                     const contents = fs.readFileSync(file).toString();
 
                     try {
+                        console.log('(📡) Copy ' + file + ':');
                         platform.dest.forEach(function (destinationPath) {
                             if (path.basename(destinationPath) === path.basename(file)) {
                                 const folder = destinationPath.substring(0, destinationPath.lastIndexOf('/'));
