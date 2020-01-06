@@ -21,40 +21,24 @@ const PLATFORM = {
         ],
         src: [
             'Chabok.sandbox.plist',
-            IOS_DIR + '/www/Chabok.sandbox.plist',
-            'www/Chabok.sandbox.plist',
 
             'Chabok.production.plist',
-            IOS_DIR + '/www/Chabok.production.plist',
-            'www/Chabok.production.plist'
         ]
     },
     ANDROID: {
         dest: [
-            ANDROID_DIR + '/google-services.json',
             ANDROID_DIR + '/app/google-services.json',
 
-            ANDROID_DIR + '/Chabok.sandbox.json',
             ANDROID_DIR + '/app/Chabok.sandbox.json',
 
-            ANDROID_DIR + '/Chabok.production.json',
             ANDROID_DIR + '/app/Chabok.production.json'
         ],
         src: [
             'google-services.json',
-            ANDROID_DIR + '/assets/www/google-services.json',
-            'www/google-services.json',
-            ANDROID_DIR + '/app/src/main/google-services.json',
 
             'Chabok.sandbox.json',
-            ANDROID_DIR + '/assets/www/Chabok.sandbox.json',
-            'www/Chabok.sandbox.json',
-            ANDROID_DIR + '/app/src/main/Chabok.sandbox.json',
 
             'Chabok.production.json',
-            ANDROID_DIR + '/assets/www/Chabok.production.json',
-            'www/Chabok.production.json',
-            ANDROID_DIR + '/app/src/main/Chabok.production.json'
         ],
     }
 };
