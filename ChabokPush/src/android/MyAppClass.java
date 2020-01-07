@@ -1,4 +1,4 @@
-package com.chabokpush.cordova.ChabokPush;
+package com.chabokpush.cordova;
 
 import android.app.Application;
 

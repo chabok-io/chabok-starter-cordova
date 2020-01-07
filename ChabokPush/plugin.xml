@@ -42,9 +42,9 @@
 
         <config-file target="AndroidManifest.xml" parent="/*" />
         <source-file src="src/android/ChabokPush.java"
-                     target-dir="src/com/chabokpush/cordova/ChabokPush"/>
+                     target-dir="src/com/chabokpush/cordova"/>
         <source-file src="src/android/MyAppClass.java"
-                     target-dir="src/com/chabokpush/cordova/ChabokPush" />
+                     target-dir="src/com/chabokpush/cordova" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <meta-data android:name="com.adpdigital.push.client.PlatformType"

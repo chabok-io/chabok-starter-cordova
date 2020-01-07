@@ -59,6 +59,7 @@ void failureCallback(NSString* callbackId, NSDictionary* data) {
 
 -(void)pluginInitialize {
     NSLog(@"Starting Chabok plugin");
+    [PushClientManager.defaultManager addDelegate:self];
 }
 -(void)configureEnvironment:(CDVInvokedUrlCommand*)command {
     BOOL devMode = [command.arguments objectAtIndex:0];
