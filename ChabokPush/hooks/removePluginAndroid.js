@@ -75,7 +75,7 @@ module.exports = function(context) {
 
     let FILE_NAME = 'MyAppClass.java';
     let platformAndroidRoot = path.join(context.opts.projectRoot,
-        'platforms/android/app/src/main/java/com/chabokpush/cordova/ChabokPush');
+        'platforms/android/app/src/main/java/com/chabokpush/cordova');
     let applicationClass = path.join(platformAndroidRoot, FILE_NAME);
     utilities.removeFile(applicationClass);
 

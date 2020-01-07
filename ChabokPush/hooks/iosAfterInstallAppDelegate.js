@@ -34,7 +34,7 @@ function addChabokLib(context){
                 let result = data.replace('#import "AppDelegate.h"', '#import "AppDelegate.h" \n' + ChabokImport);
 
                 result = result.replace('self.viewController = [[MainViewController alloc] init];',
-                    '    ' + ChabokConfigEnv + '\n\n    self.viewController = [[MainViewController alloc] init];');
+                    ChabokConfigEnv + '\n\n    self.viewController = [[MainViewController alloc] init];');
 
                 console.log('Add Chabok configureEnvironment method into the iOS AppDelegate class. \n\n' + result);
 
@@ -83,7 +83,7 @@ function removeChabokLib(context){
             if (data.includes(ChabokImport)) {
                 let result = data.replace('#import "AppDelegate.h" \n' + ChabokImport, '#import "AppDelegate.h"');
 
-                result = result.replace('    ' + ChabokConfigEnv + '\n\n    self.viewController = [[MainViewController alloc] init];', 'self.viewController = [[MainViewController alloc] init];');
+                result = result.replace(ChabokConfigEnv + '\n\n    self.viewController = [[MainViewController alloc] init];', 'self.viewController = [[MainViewController alloc] init];');
 
                 console.log('Remove Chabok configureEnvironment method from the iOS AppDelegate class. \n\n' + result);
 

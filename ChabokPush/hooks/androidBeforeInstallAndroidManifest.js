@@ -3,7 +3,7 @@
 let fs = require('fs');
 let path = require('path');
 
-let APP_CLASS = 'com.chabokpush.cordova.ChabokPush.MyAppClass';
+let APP_CLASS = 'com.chabokpush.cordova.MyAppClass';
 let FILE_NAME = 'AndroidManifest.xml'
 
 function replaceClassName(currentCode, withClass, context){

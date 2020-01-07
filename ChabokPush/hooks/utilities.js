@@ -117,7 +117,6 @@ module.exports = {
 
     readChabokEnvFromProcess: function (variables) {
         let variablesStr = variables
-        console.log('variablesStr = ' + variablesStr);
         if (typeof variables !== "string") {
             variablesStr = JSON.stringify(variables);
         }

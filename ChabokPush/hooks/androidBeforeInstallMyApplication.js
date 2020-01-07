@@ -15,8 +15,7 @@ module.exports = function(context) {
 
     console.log('-----> Start to insert Chabok application class into the ' + FILE_NAME + 'file.');
 
-    let platformRoot = path.join(context.opts.projectRoot, 'platforms/android/app/src/main/java/com/chabokpush/cordova/ChabokPush');
-    console.log('platformRoot = ' + platformRoot);
+    let platformRoot = path.join(context.opts.projectRoot, 'platforms/android/app/src/main/java/com/chabokpush/cordova');
 
     let applicationClass = path.join(platformRoot, FILE_NAME);
 
