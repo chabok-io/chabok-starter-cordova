@@ -115,7 +115,7 @@ module.exports = {
         }
     },
 
-    readChabokEnvFromProcess: function (variables) {
+    readChabokEnvFromProcess: function (variables = 'sandbox') {
         let variablesStr = variables
         if (typeof variables !== "string") {
             variablesStr = JSON.stringify(variables);
@@ -124,7 +124,7 @@ module.exports = {
         let envVarName = 'CHABOK_ENVIRONMENT';
         let envIndex = variablesStr.indexOf(envVarName)
         if (envIndex === -1) {
-            return undefined
+            return 'sandbox'
         }
 
         let startIndex = envIndex + envVarName.length + 1
