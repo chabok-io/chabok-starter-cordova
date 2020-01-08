@@ -2,12 +2,18 @@ package com.chabokpush.cordova;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import com.adpdigital.push.AdpPushClient;
 import com.adpdigital.push.AppState;
 import com.adpdigital.push.Callback;
+import com.adpdigital.push.ChabokNotification;
+import com.adpdigital.push.ChabokNotificationAction;
 import com.adpdigital.push.ConnectionStatus;
+import com.adpdigital.push.NotificationHandler;
 import com.adpdigital.push.config.Environment;
 import com.adpdigital.push.LogLevel;
 import com.adpdigital.push.PushMessage;
@@ -29,19 +35,42 @@ import java.util.Map;
  * This class echoes a string called from JavaScript.
  */
 public class ChabokPush extends CordovaPlugin {
-
     private static final String TAG = "CHK";
+
+    private String lastConnectionStatues;
+    private JSONObject lastChabokMessage;
     private CallbackContext onMessageCallbackContext;
     private CallbackContext onRegisterCallbackContext;
+    private CallbackContext onNotificationOpenedContext;
     private CallbackContext onConnectionStatusCallbackContext;
+
+    private boolean setNotificationOpenedHandler = false;
+
+    public static ChabokNotification coldStartChabokNotification;
+    public static ChabokNotificationAction coldStartChabokNotificationAction;
+    private String lastMessageId;
 
     @Override
     protected void pluginInitialize() {
         final Context context = this.cordova.getActivity().getApplicationContext();
+        final ChabokPush that = this;
         this.cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 Log.d(TAG, "Starting Chabok plugin");
                 AdpPushClient.setApplicationContext(context);
+                AdpPushClient.get().addListener(that);
+
+                AdpPushClient.get().addNotificationHandler(new NotificationHandler(){
+                    @Override
+                    public boolean notificationOpened(ChabokNotification message, ChabokNotificationAction notificationAction) {
+                        coldStartChabokNotification = message;
+                        coldStartChabokNotificationAction = notificationAction;
+
+                        handleNotificationOpened();
+
+                        return super.notificationOpened(message, notificationAction);
+                    }
+                });
             }
         });
     }
@@ -102,9 +131,27 @@ public class ChabokPush extends CordovaPlugin {
             return true;
         } else if (action.equals("setOnMessageCallback")){
             this.setOnMessageCallbackContext(callbackContext);
+
+            if (callbackContext != null && this.lastChabokMessage != null){
+                successCallback(callbackContext, this.lastChabokMessage);
+            }
             return true;
         } else if (action.equals("setOnConnectionStatusCallback")){
             this.setOnConnectionStatusCallbackContext(callbackContext);
+
+            if (callbackContext != null && this.lastConnectionStatues != null){
+                successCallback(callbackContext, this.lastConnectionStatues);
+            }
+            return true;
+        } else if (action.equals("setOnNotificationOpenedCallback")){
+            this.setOnNotificationOpenedContext(callbackContext);
+
+            coldStartChabokNotification = AdpPushClient.get().getLastNotificationData();
+            coldStartChabokNotificationAction = AdpPushClient.get().getLastNotificationAction();
+
+            if (callbackContext != null && coldStartChabokNotification != null){
+                handleNotificationOpened();
+            }
             return true;
         }
         return false;
@@ -281,6 +328,93 @@ public class ChabokPush extends CordovaPlugin {
         this.onConnectionStatusCallbackContext = callbackContext;
     }
 
+    private void setOnNotificationOpenedContext(CallbackContext callbackContext) {
+        this.onNotificationOpenedContext = callbackContext;
+    }
+
+    private void handleNotificationOpened() {
+        if (coldStartChabokNotificationAction != null &&
+                coldStartChabokNotification != null &&
+                (lastMessageId == null || !lastMessageId.contentEquals(coldStartChabokNotification.getId()))) {
+            lastMessageId = coldStartChabokNotification.getId();
+
+            notificationOpenedEvent(coldStartChabokNotification, coldStartChabokNotificationAction);
+
+            coldStartChabokNotification = null;
+            coldStartChabokNotificationAction = null;
+        }
+    }
+
+    private void notificationOpenedEvent(ChabokNotification message, ChabokNotificationAction notificationAction) {
+        final CallbackContext callbackContext = this.onNotificationOpenedContext;
+
+        final JSONObject response = new JSONObject();
+
+        try {
+            if (notificationAction.actionID != null) {
+                response.put("actionId", notificationAction.actionID);
+            }
+            if (notificationAction.actionUrl != null) {
+                response.put("actionUrl", notificationAction.actionUrl);
+            }
+
+            if (notificationAction.type == ChabokNotificationAction.ActionType.Opened) {
+                response.put("actionType", "opened");
+            } else if (notificationAction.type == ChabokNotificationAction.ActionType.Dismissed) {
+                response.put("actionType", "dismissed");
+            } else if (notificationAction.type == ChabokNotificationAction.ActionType.ActionTaken) {
+                response.put("actionType", "action_taken");
+            }
+
+            JSONObject msgMap = new JSONObject();
+
+            if (message.getTitle() != null) {
+                msgMap.put("title", message.getTitle());
+            }
+            if (message.getId() != null) {
+                msgMap.put("id", message.getId());
+            }
+
+            if (message.getText() != null) {
+                msgMap.put("body", message.getText());
+            }
+            if (message.getTrackId() != null) {
+                msgMap.put("trackId", message.getTrackId());
+            }
+            if (message.getTopicName() != null) {
+                msgMap.put("channel", message.getTopicName());
+            }
+
+            if (message.getSound() != null) {
+                msgMap.put("sound", message.getSound());
+            }
+
+            try {
+                Bundle data = message.getExtras();
+                if (data != null) {
+                    msgMap.put("data", data);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            response.put("message", msgMap);
+
+            if (coldStartChabokNotification == null) {
+                coldStartChabokNotification = message;
+            }
+            if (coldStartChabokNotificationAction == null) {
+                coldStartChabokNotificationAction = notificationAction;
+            }
+
+            if (response != null && callbackContext != null) {
+                successCallback(callbackContext, response);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void onEvent(AppState state){
         android.util.Log.d(TAG, "=================== onEvent: state = " + state + ", this.onRegisterCallbackContext = " + this.onRegisterCallbackContext);
         if (state == AppState.REGISTERED){
@@ -330,6 +464,8 @@ public class ChabokPush extends CordovaPlugin {
                 connectionStatus = "DISCONNECTED";
         }
 
+        this.lastConnectionStatues = connectionStatus;
+
         if (connectionStatus != null && this.onConnectionStatusCallbackContext != null){
             successCallback(this.onConnectionStatusCallbackContext, connectionStatus);
         }
@@ -367,6 +503,8 @@ public class ChabokPush extends CordovaPlugin {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                lastChabokMessage = message ;
 
                 if (message != null && callbackContext != null) {
                     successCallback(callbackContext, message);

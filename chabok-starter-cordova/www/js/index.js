@@ -40,6 +40,25 @@ var app = {
         console.log('cordova.plugins = ', JSON.stringify(chabok));
 
         console.log('CHABOK INITIALIZED SUCCESSFULLY');
+
+        chabok.setOnConnectionStatusCallback((status) => {
+            console.log('lblConnectionStatus = ' + status);
+            document.getElementById("lblConnectionStatus").innerHTML = status;
+            chabok.getUserId(userId => {
+                document.getElementById('txtUserId').value = userId;
+            }, error => {
+                console.warn(error);
+            })
+        })
+
+        chabok.setOnMessageCallback(msg => {
+            console.log('(CORDOVA-JS-LEVEL) setOnMessageCallback = ' + JSON.stringify(msg));
+            document.getElementById("lstMessageLog").innerHTML = JSON.stringify(msg);
+        })
+
+        chabok.setOnNotificationOpenedCallback( action => {
+            console.log('(CORDOVA-JS-LEVEL) setOnNotificationOpenedCallback = ' + JSON.stringify(action));
+        })
     },
 
     // Update DOM on a Received Event
