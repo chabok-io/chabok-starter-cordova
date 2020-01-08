@@ -1,6 +1,6 @@
 {
   "name": "com.chabokpush.cordova",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "ChabokPush Realtime messaging",
   "cordova": {
     "id": "com.chabokpush.cordova",
@@ -15,5 +15,13 @@
     "cordova-ios"
   ],
   "author": "Chabok Realtime Solutions",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chabok-io/chabok-starter-cordova.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chabok-io/chabok-starter-cordova/issues"
+  },
+  "homepage": "https://github.com/chabok-io/chabok-starter-cordova#readme"
 }

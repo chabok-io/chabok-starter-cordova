@@ -89,13 +89,17 @@ ChabokPush.prototype.setOnConnectionStatusCallback = function (onConnection) {
     exec(onConnection, function () {}, bridgeName, 'setOnConnectionStatusCallback', []);
 };
 
+ChabokPush.prototype.setOnNotificationOpenedCallback = function (notificationOpen) {
+    exec(notificationOpen, function () {}, bridgeName, 'setOnNotificationOpenedCallback', []);
+};
+
 
 //-------------------------------------------------------------------
 
 if(!window.plugins)
     window.plugins = {};
 
-if (!window.plugins.OneSignal)
+if (!window.plugins.ChabokPush)
     window.plugins.ChabokPush = new ChabokPush();
 
 if (typeof module != 'undefined' && module.exports)
