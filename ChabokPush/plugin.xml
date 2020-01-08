@@ -18,9 +18,11 @@
         <hook type="before_plugin_install"  src="hooks/after_prepare.js"/>
         <hook type="after_plugin_install" src="hooks/androidBeforeInstallAndroidManifest.js" />
         <hook type="after_plugin_install" src="hooks/androidBeforeInstallMyApplication.js" />
+        <hook type="after_plugin_install" src="hooks/androidAfterInstallAddPluginGradle.js" />
 
         <hook type="before_plugin_uninstall" src="hooks/removePluginAndroid.js" />
         <hook type="before_plugin_uninstall" src="hooks/androidBeforeInstallAndroidManifest.js" />
+<!--        <hook type="before_plugin_uninstall" src="hooks/androidAfterInstallAddPluginGradle.js" />-->
         <!-- END HOOKS -->
 
         <!-- START Add frameworks -->
