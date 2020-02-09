@@ -173,8 +173,6 @@ ChabokPush.prototype.setOnConnectionStatusCallback = function (onConnection) {
     exec(onConnection, function () {}, bridgeName, 'setOnConnectionStatusCallback', []);
 };
 
-<<<<<<< Updated upstream
-=======
 ChabokPush.prototype.setOnNotificationOpenedCallback = function (notificationOpen) {
     exec(notificationOpen, function () {}, bridgeName, 'setOnNotificationOpenedCallback', []);
 };
@@ -182,14 +180,13 @@ ChabokPush.prototype.setOnNotificationOpenedCallback = function (notificationOpe
 function isValidDate(date) {
     return date && Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date);
 };
->>>>>>> Stashed changes
 
 //-------------------------------------------------------------------
 
 if(!window.plugins)
     window.plugins = {};
 
-if (!window.plugins.OneSignal)
+if (!window.plugins.ChabokPush)
     window.plugins.ChabokPush = new ChabokPush();
 
 if (typeof module != 'undefined' && module.exports)

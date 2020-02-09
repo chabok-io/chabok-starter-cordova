@@ -59,3 +59,7 @@ resources/signing
 \.idea/
 
 chabok-starter-cordova/platforms/
+
+chabok-starter-cordova/node_modules/
+
+chabok-starter-cordova/plugins/
