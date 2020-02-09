@@ -7,7 +7,16 @@ import android.util.Log;
 import com.adpdigital.push.AdpPushClient;
 import com.adpdigital.push.AppState;
 import com.adpdigital.push.Callback;
+<<<<<<< Updated upstream
 import com.adpdigital.push.ConnectionStatus;
+=======
+import com.adpdigital.push.ChabokEvent;
+import com.adpdigital.push.ChabokNotification;
+import com.adpdigital.push.ChabokNotificationAction;
+import com.adpdigital.push.ConnectionStatus;
+import com.adpdigital.push.Datetime;
+import com.adpdigital.push.NotificationHandler;
+>>>>>>> Stashed changes
 import com.adpdigital.push.config.Environment;
 import com.adpdigital.push.LogLevel;
 import com.adpdigital.push.PushMessage;
@@ -94,11 +103,34 @@ public class ChabokPush extends CordovaPlugin {
 
             setUserAttributes(userInfo);
             return true;
+        } else if (action.equals("unsetUserAttribute")) {
+            String attributeKey = args.getString(0);
+
+            unsetUserAttribute(attributeKey);
+            return true;
+        } else if (action.equals("incrementUserAttribute")) {
+            String attributeKey = args.getString(0);
+            double attributeValue = args.getDouble(1);
+
+            incrementUserAttribute(attributeKey, attributeValue);
+            return true;
+        } else if (action.equals("decrementUserAttribute")) {
+            String attributeKey = args.getString(0);
+            double attributeValue = args.getDouble(1);
+
+            decrementUserAttribute(attributeKey, attributeValue);
+            return true;
         } else if (action.equals("track")){
             String trackName = args.getString(0);
             JSONObject data = args.getJSONObject(1);
 
             track(trackName, data);
+            return true;
+        } else if (action.equals("trackPurchase")) {
+            String trackName = args.getString(0);
+            JSONObject data = args.getJSONObject(1);
+
+            trackPurchase(trackName, data);
             return true;
         } else if (action.equals("setOnMessageCallback")){
             this.setOnMessageCallbackContext(callbackContext);
@@ -184,7 +216,71 @@ public class ChabokPush extends CordovaPlugin {
     }
 
     public void track(String trackName, JSONObject data){
-        AdpPushClient.get().track(trackName, data);
+        try {
+            if (data != null) {
+                JSONObject modifiedEvents = new JSONObject();
+                Iterator<String> keys = data.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    if (key.startsWith("@CHKDATE_")) {
+                        String actualKey = key.substring(9);
+                        if (data.get(key) instanceof String) {
+                            modifiedEvents.put(actualKey, new Datetime(Long.valueOf(data.getString(key))));
+                        }
+                    } else {
+                        modifiedEvents.put(key, data.get(key));
+                    }
+                }
+                AdpPushClient.get().track(trackName, modifiedEvents);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void trackPurchase(String eventName, JSONObject data) {
+        try {
+            double revenue = 0;
+            String currency = null;
+            JSONObject eventData = null;
+            if (!data.has("revenue")) {
+                throw new IllegalArgumentException("Invalid revenue");
+            }
+            revenue = data.getDouble("revenue");
+            if (data.has("currency")) {
+                currency = data.getString("currency");
+            }
+
+            if (data.has("data")) {
+                eventData = data.getJSONObject("data");
+            }
+
+            ChabokEvent chabokEvent = new ChabokEvent(revenue);
+            if (currency != null) {
+                chabokEvent.setRevenue(revenue, currency);
+            }
+
+            if (eventData != null) {
+                JSONObject modifiedEvents = new JSONObject();
+                Iterator<String> keys = eventData.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    if (key.startsWith("@CHKDATE_")) {
+                        String actualKey = key.substring(9);
+                        if (eventData.get(key) instanceof String) {
+                            modifiedEvents.put(actualKey, new Datetime(Long.valueOf(eventData.getString(key))));
+                        }
+                    } else {
+                        modifiedEvents.put(key, eventData.get(key));
+                    }
+                }
+                chabokEvent.setData(modifiedEvents);
+            }
+
+            AdpPushClient.get().trackPurchase(eventName, chabokEvent);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addTag(String tagName, CallbackContext callbackContext){
@@ -233,12 +329,33 @@ public class ChabokPush extends CordovaPlugin {
     }
 
     public void setUserAttributes(JSONObject userInfo) {
-        try {
-            HashMap<String, Object> userInfoMap = (HashMap<String, Object>) jsonToMap(userInfo);
-            AdpPushClient.get().setUserAttributes(userInfoMap);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (userInfo != null) {
+            HashMap<String, Object> userInfo = (HashMap<String, Object>) jsonToMap(userInfo);
+            HashMap<String, Object> modifiedInfo = new HashMap<>();
+            for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
+                if (entry.getKey().startsWith("@CHKDATE_")) {
+                    String actualKey = entry.getKey().substring(9);
+                    if (entry.getValue() instanceof String) {
+                        modifiedInfo.put(actualKey, new Datetime(Long.valueOf((String) entry.getValue())));
+                    }
+                } else {
+                    modifiedInfo.put(entry.getKey(), entry.getValue());
+                }
+            }
+            AdpPushClient.get().setUserAttributes(modifiedInfo);
         }
+    }
+
+    public void unsetUserAttribute(String attributeKey) {
+        AdpPushClient.get().unsetUserAttribute(attributeKey);
+    }
+
+    public void incrementUserAttribute(String attributeKey, double attributeValue) {
+        AdpPushClient.get().incrementUserAttribute(attributeKey, attributeValue);
+    }
+
+    public void decrementUserAttribute(String attributeKey, double attributeValue) {
+        AdpPushClient.get().incrementUserAttribute(attributeKey, -attributeValue);
     }
 
     public String getUserId(CallbackContext callbackContext){
