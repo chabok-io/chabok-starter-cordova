@@ -36,9 +36,46 @@ ChabokPush.prototype.getUserAttributes = function (success, error) {
 };
 
 ChabokPush.prototype.setUserAttributes = function (userInfo) {
+    var _attrs = {};
+    if (userInfo) {
+        Object.keys(userInfo).forEach(function(key) {
+            if (isValidDate(userInfo[key])) {
+                _attrs['@CHKDATE_' + key] = userInfo[key].getTime().toString();
+            } else {
+                _attrs[key] = userInfo[key];
+            }
+        });
+    }
+
     exec(function () {
     }, function () {
-    }, bridgeName, 'setUserAttributes', [userInfo]);
+    }, bridgeName, 'setUserAttributes', [_attrs]);
+};
+
+ChabokPush.prototype.incrementUserAttribute = function (attributeKey, attributeValue = 1) {
+    if (typeof attributeValue != 'number') {
+        throw new Error('Invalid increment value.');
+    }
+
+    exec(function () {
+    }, function () {
+    }, bridgeName, 'incrementUserAttribute', [attributeKey, attributeValue]);
+};
+
+ChabokPush.prototype.decrementUserAttribute = function (attributeKey, attributeValue = 1) {
+    if (typeof attributeValue != 'number') {
+        throw new Error('Invalid decrement value.');
+    }
+
+    exec(function () {
+    }, function () {
+    }, bridgeName, 'decrementUserAttribute', [attributeKey, attributeValue]);
+};
+
+ChabokPush.prototype.unsetUserAttribute = function (attributeKey) {
+    exec(function () {
+    }, function () {
+    }, bridgeName, 'unsetUserAttribute', [attributeKey]);
 };
 
 ChabokPush.prototype.getUserInfo = function (success, error) {
@@ -46,9 +83,20 @@ ChabokPush.prototype.getUserInfo = function (success, error) {
 };
 
 ChabokPush.prototype.setUserInfo = function (userInfo) {
+    var _attrs = {};
+    if (userInfo) {
+        Object.keys(userInfo).forEach(function(key) {
+            if (isValidDate(userInfo[key])) {
+                _attrs['@CHKDATE_' + key] = userInfo[key].getTime().toString();
+            } else {
+                _attrs[key] = userInfo[key];
+            }
+        });
+    }
+
     exec(function () {
     }, function () {
-    }, bridgeName, 'setUserAttributes', [userInfo]);
+    }, bridgeName, 'setUserAttributes', [_attrs]);
 };
 
 ChabokPush.prototype.setDefaultTracker = function (trackerName) {
@@ -58,10 +106,46 @@ ChabokPush.prototype.setDefaultTracker = function (trackerName) {
 };
 
 ChabokPush.prototype.track = function (trackName, data) {
+    var _data = {};
+    if (data) {
+        Object.keys(data).forEach(function(key) {
+            if (isValidDate(data[key])) {
+                _data['@CHKDATE_' + key] = data[key].getTime().toString();
+            } else {
+                _data[key] = data[key];
+            }
+        });
+    }
+
     exec(function () {
     }, function () {
-    }, bridgeName, 'track', [trackName, data]);
+    }, bridgeName, 'track', [trackName, _data]);
 };
+
+ChabokPush.prototype.trackPurchase = (eventName, chabokEvent) => {
+    var _event = {};
+    if (chabokEvent) {
+        Object.keys(chabokEvent).forEach(function(key) {
+            if (key == 'data') {
+                var _data = {};
+                Object.keys(chabokEvent[key]).forEach(function(key2) {
+                    if (isValidDate(chabokEvent[key][key2])) {
+                        _data['@CHKDATE_' + key2] = chabokEvent[key][key2].getTime().toString();
+                    } else {
+                        _data[key2] = chabokEvent[key][key2];
+                    }
+                });
+                _event[key] = _data;
+            } else {
+                _event[key] = chabokEvent[key];
+            }
+        });
+    }
+
+    exec(function () {
+    }, function () {
+    }, bridgeName, 'trackPurchase', [eventName, _event]);
+}
 
 ChabokPush.prototype.resetBadge = function () {
     exec(function () {
@@ -93,6 +177,9 @@ ChabokPush.prototype.setOnNotificationOpenedCallback = function (notificationOpe
     exec(notificationOpen, function () {}, bridgeName, 'setOnNotificationOpenedCallback', []);
 };
 
+function isValidDate(date) {
+    return date && Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date);
+};
 
 //-------------------------------------------------------------------
 

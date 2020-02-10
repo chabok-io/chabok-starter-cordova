@@ -50,7 +50,13 @@ void failureCallback(NSString* callbackId, NSDictionary* data) {
 -(void) publish:(CDVInvokedUrlCommand *) command;
 -(void) resetBadge:(CDVInvokedUrlCommand *) command;
 -(void) track:(CDVInvokedUrlCommand *) command;
+-(void) trackPurchase:(CDVInvokedUrlCommand *) command;
 -(void) setDefaultTracker:(CDVInvokedUrlCommand *) command;
+
+-(void) setUserAttributes:(CDVInvokedUrlCommand *) command;
+-(void) unsetUserAttribute:(CDVInvokedUrlCommand *) command;
+-(void) incrementUserAttribute:(CDVInvokedUrlCommand *) command;
+-(void) decrementUserAttribute:(CDVInvokedUrlCommand *) command;
 
 @end
 
@@ -301,21 +307,33 @@ PushClientMessage* _lastChabokMessage;
 
 #pragma mark - track
 -(void) track:(CDVInvokedUrlCommand *) command {
-
-    //TODO: This should handle in SDK
-    if (![PushClientManager.defaultManager getInstallationId] || PushClientManager.defaultManager.connectionState != PushClientServerConnectedState) {
-        NSLog(@"chabokpush ----------- Not connected, Queue the operation");
-        [self enqueueWhenSessionIsConnected:^{
-            NSLog(@"chabokpush ----------- Now connected and dequeue");
-            [self track:command];
-        }];
-        return;
-    }
     NSLog(@"chabokpush ----------- Track event called");
     NSString *trackName = [command.arguments objectAtIndex:0];
     NSDictionary *trackData = [command.arguments objectAtIndex:1];
 
-    [PushClientManager.defaultManager track:trackName data:trackData];
+    [PushClientManager.defaultManager track:trackName data:[ChabokPush getFormattedData:trackData]];
+}
+
+-(void) trackPurchase:(CDVInvokedUrlCommand *) command {
+    NSLog(@"chabokpush ----------- TrackPurchase event called");
+    NSString *eventName = [command.arguments objectAtIndex:0];
+    NSDictionary *data = [command.arguments objectAtIndex:1];
+
+    ChabokEvent *chabokEvent = [[ChabokEvent alloc] init];
+
+    if (![data valueForKey:@"revenue"]) {
+        [NSException raise:@"Invalid revenue" format:@"Please provide a revenue."];
+    }
+    chabokEvent.revenue = [[data valueForKey:@"revenue"] doubleValue];
+    if ([data valueForKey:@"currency"]) {
+        chabokEvent.currency = [data valueForKey:@"currency"];
+    }
+    if ([data valueForKey:@"data"]) {
+        chabokEvent.data = [ChabokPush getFormattedData:[data valueForKey:@"data"]];
+    }
+
+    [PushClientManager.defaultManager trackPurchase:eventName
+                                      chabokEvent:chabokEvent];
 }
 
 #pragma mark - default tracker
@@ -329,7 +347,27 @@ PushClientMessage* _lastChabokMessage;
 -(void) setUserAttributes:(CDVInvokedUrlCommand *) command {
     NSDictionary *userInfo = [command.arguments objectAtIndex:0];
 
-    [PushClientManager.defaultManager setUserAttributes:userInfo];
+    [PushClientManager.defaultManager setUserAttributes:[ChabokPush getFormattedData:userInfo]];
+}
+
+-(void) unsetUserAttribute:(CDVInvokedUrlCommand *) command {
+    NSString *attribute = [command.arguments objectAtIndex:0];
+
+    [PushClientManager.defaultManager unsetUserAttribute:attribute];
+}
+
+-(void) incrementUserAttribute:(CDVInvokedUrlCommand *) command {
+    NSString *attribute = [command.arguments objectAtIndex:0];
+    long value = [[command.arguments objectAtIndex:1] longLongValue];
+
+    [PushClientManager.defaultManager incrementUserAttributeValue:attribute value:value];
+}
+
+-(void) decrementUserAttribute:(CDVInvokedUrlCommand *) command {
+    NSString *attribute = [command.arguments objectAtIndex:0];
+    long value = [[command.arguments objectAtIndex:1] longLongValue];
+
+    [PushClientManager.defaultManager incrementUserAttributeValue:attribute value:(value * -1)];
 }
 
 -(void) getUserAttributes:(CDVInvokedUrlCommand *) command {
@@ -608,6 +646,20 @@ PushClientMessage* _lastChabokMessage;
                                           block();
                                       }
                                   }];
+}
+
++(NSDictionary *) getFormattedData:(NSDictionary *)data {
+    NSMutableDictionary *mutableData = [NSMutableDictionary.alloc init];
+    for (NSString *key in [data allKeys]) {
+        // check datetime type
+        if ([key hasPrefix:@"@CHKDATE_"]) {
+            NSString *actualKey = [key substringFromIndex:9];
+            mutableData[actualKey] = [[Datetime alloc] initWithTimestamp:[data[key] longLongValue]];
+        } else {
+            mutableData[key] = data[key];
+        }
+    }
+    return mutableData;
 }
 
 @end
