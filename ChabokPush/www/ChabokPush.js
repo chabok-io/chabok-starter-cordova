@@ -122,7 +122,7 @@ ChabokPush.prototype.track = function (trackName, data) {
     }, bridgeName, 'track', [trackName, _data]);
 };
 
-trackPurchase = (eventName, chabokEvent) => {
+ChabokPush.prototype.trackPurchase = (eventName, chabokEvent) => {
     var _event = {};
     if (chabokEvent) {
         Object.keys(chabokEvent).forEach(function(key) {
