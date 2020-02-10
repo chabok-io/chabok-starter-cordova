@@ -358,14 +358,14 @@ PushClientMessage* _lastChabokMessage;
 
 -(void) incrementUserAttribute:(CDVInvokedUrlCommand *) command {
     NSString *attribute = [command.arguments objectAtIndex:0];
-    long value = [[command.arguments objectAtIndex:0] longLongValue];
+    long value = [[command.arguments objectAtIndex:1] longLongValue];
 
     [PushClientManager.defaultManager incrementUserAttributeValue:attribute value:value];
 }
 
 -(void) decrementUserAttribute:(CDVInvokedUrlCommand *) command {
     NSString *attribute = [command.arguments objectAtIndex:0];
-    long value = [[command.arguments objectAtIndex:0] longLongValue];
+    long value = [[command.arguments objectAtIndex:1] longLongValue];
 
     [PushClientManager.defaultManager incrementUserAttributeValue:attribute value:(value * -1)];
 }
