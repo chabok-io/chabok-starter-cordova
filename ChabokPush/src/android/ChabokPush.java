@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.core.app.NotificationCompat;
-
 import com.adpdigital.push.AdpPushClient;
 import com.adpdigital.push.AppState;
 import com.adpdigital.push.Callback;
@@ -370,19 +368,24 @@ public class ChabokPush extends CordovaPlugin {
 
     public void setUserAttributes(JSONObject userInfo) {
         if (userInfo != null) {
-            HashMap<String, Object> userInfo = (HashMap<String, Object>) jsonToMap(userInfo);
-            HashMap<String, Object> modifiedInfo = new HashMap<>();
-            for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
-                if (entry.getKey().startsWith("@CHKDATE_")) {
-                    String actualKey = entry.getKey().substring(9);
-                    if (entry.getValue() instanceof String) {
-                        modifiedInfo.put(actualKey, new Datetime(Long.valueOf((String) entry.getValue())));
+            HashMap<String, Object> userInfoMap = null;
+            try {
+                userInfoMap = (HashMap<String, Object>) jsonToMap(userInfo);
+                HashMap<String, Object> modifiedInfo = new HashMap<>();
+                for (Map.Entry<String, Object> entry : userInfoMap.entrySet()) {
+                    if (entry.getKey().startsWith("@CHKDATE_")) {
+                        String actualKey = entry.getKey().substring(9);
+                        if (entry.getValue() instanceof String) {
+                            modifiedInfo.put(actualKey, new Datetime(Long.valueOf((String) entry.getValue())));
+                        }
+                    } else {
+                        modifiedInfo.put(entry.getKey(), entry.getValue());
                     }
-                } else {
-                    modifiedInfo.put(entry.getKey(), entry.getValue());
                 }
+                AdpPushClient.get().setUserAttributes(modifiedInfo);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            AdpPushClient.get().setUserAttributes(modifiedInfo);
         }
     }
 
