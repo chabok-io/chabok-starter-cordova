@@ -54,6 +54,7 @@ void failureCallback(NSString* callbackId, NSDictionary* data) {
 -(void) setDefaultTracker:(CDVInvokedUrlCommand *) command;
 
 -(void) setUserAttributes:(CDVInvokedUrlCommand *) command;
+-(void) unsetUserAttribute:(CDVInvokedUrlCommand *) command;
 -(void) incrementUserAttribute:(CDVInvokedUrlCommand *) command;
 -(void) decrementUserAttribute:(CDVInvokedUrlCommand *) command;
 
@@ -310,7 +311,7 @@ PushClientMessage* _lastChabokMessage;
     NSString *trackName = [command.arguments objectAtIndex:0];
     NSDictionary *trackData = [command.arguments objectAtIndex:1];
 
-    [PushClientManager.defaultManager track:trackName data:[AdpPushClient getFormattedData:trackData]];
+    [PushClientManager.defaultManager track:trackName data:[ChabokPush getFormattedData:trackData]];
 }
 
 -(void) trackPurchase:(CDVInvokedUrlCommand *) command {
@@ -328,9 +329,9 @@ PushClientMessage* _lastChabokMessage;
         chabokEvent.currency = [data valueForKey:@"currency"];
     }
     if ([data valueForKey:@"data"]) {
-        chabokEvent.data = [AdpPushClient getFormattedData:[data valueForKey:@"data"]];
+        chabokEvent.data = [ChabokPush getFormattedData:[data valueForKey:@"data"]];
     }
-    
+
     [PushClientManager.defaultManager trackPurchase:eventName
                                       chabokEvent:chabokEvent];
 }
@@ -346,7 +347,7 @@ PushClientMessage* _lastChabokMessage;
 -(void) setUserAttributes:(CDVInvokedUrlCommand *) command {
     NSDictionary *userInfo = [command.arguments objectAtIndex:0];
 
-    [PushClientManager.defaultManager setUserAttributes:[AdpPushClient getFormattedData:userInfo]];
+    [PushClientManager.defaultManager setUserAttributes:[ChabokPush getFormattedData:userInfo]];
 }
 
 -(void) unsetUserAttribute:(CDVInvokedUrlCommand *) command {
@@ -357,16 +358,16 @@ PushClientMessage* _lastChabokMessage;
 
 -(void) incrementUserAttribute:(CDVInvokedUrlCommand *) command {
     NSString *attribute = [command.arguments objectAtIndex:0];
-    NSInteger value = [command.arguments objectAtIndex:0];
+    long value = [[command.arguments objectAtIndex:0] longLongValue];
 
-    [PushClientManager.defaultManager incrementUserAttribute:attribute value:value];
+    [PushClientManager.defaultManager incrementUserAttributeValue:attribute value:value];
 }
 
 -(void) decrementUserAttribute:(CDVInvokedUrlCommand *) command {
     NSString *attribute = [command.arguments objectAtIndex:0];
-    NSInteger value = [command.arguments objectAtIndex:0];
+    long value = [[command.arguments objectAtIndex:0] longLongValue];
 
-    [PushClientManager.defaultManager incrementUserAttribute:attribute value:(value * -1)];
+    [PushClientManager.defaultManager incrementUserAttributeValue:attribute value:(value * -1)];
 }
 
 -(void) getUserAttributes:(CDVInvokedUrlCommand *) command {
