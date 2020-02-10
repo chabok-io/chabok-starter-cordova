@@ -56,7 +56,7 @@ ChabokPush.prototype.incrementUserAttribute = function (attributeKey, attributeV
     if (typeof attributeValue != 'number') {
         throw new Error('Invalid increment value.');
     }
-    
+
     exec(function () {
     }, function () {
     }, bridgeName, 'incrementUserAttribute', [attributeKey, attributeValue]);
