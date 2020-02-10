@@ -1,36 +1,41 @@
 # Installation
 
+for `sandbox` environment:
+```bash
+$ cordova plugin add com.chabokpush.cordova --variable CHABOK_ENVIRONMENT=SANDBOX
 ```
-cordova plugin add com.chabokpush.cordova
-Fetching plugin "com.chabokpush.cordova" via npm
-Installing "com.chabokpush.cordova" for android
-Installing "com.chabokpush.cordova" for ios
+
+for `production` environment:
+```bash
+$ cordova plugin add com.chabokpush.cordova --variable CHABOK_ENVIRONMENT=PRODUCTION
 ```
 
 ## Manual
 
+for `sandbox` environment:
+```bash
+$ cordova plugin add path_to_folder/cordova_sdk_plugin --variable CHABOK_ENVIRONMENT=SANDBOX
 ```
-cordova plugin add path_to_folder/cordova_sdk_plugin
-Installing "com.chabokpush.cordova" for android
-Installing "com.chabokpush.cordova" for ios
+
+for `production` environment:
+```bash
+$ cordova plugin add path_to_folder/cordova_sdk_plugin --variable CHABOK_ENVIRONMENT=PRODUCTION
 ```
 
 ## Remove
 
-```
-cordova plugin remove com.chabokpush.cordova 
+```bash
+$ cordova plugin remove com.chabokpush.cordova 
 ```
 
 # Run
 
-iOS:
-
+for iOS:
+```bash
+$ cordova emulate ios --target="iPhone-6s, 12.2"
 ```
-cordova emulate ios --target="iPhone-6s, 12.2"
-```
 
-android:
-
-```
-cordova emulate android
+for Android:
+```bash
+$ cordova emulate android
 ```
