@@ -56,7 +56,7 @@ to:
 ```
 
 #### With breaking changes
-If it has some breaking changes first follow the bellow instruction. After that if breaking changes includes code changes, don't forget apply all changes in `ChabokPush.java` bridge class.
+If it has some breaking changes first follow the above instruction. After that if breaking changes includes code changes, don't forget apply all changes in `ChabokPush.java` bridge class.
 The `ChabokPush` is a simple bridge for connect the native module and js module.
 
 ## iOS contributing instructions:
@@ -94,5 +94,5 @@ to:
 ```
 
 #### With breaking changes
-If it has some breaking changes first follow the bellow instruction. After that if breaking changes includes code changes, don't forget apply all changes in `ChabokPush.m` bridge class.
+If it has some breaking changes first follow the above instruction. After that if breaking changes includes code changes, don't forget apply all changes in `ChabokPush.m` bridge class.
 The `ChabokPush` is a simple bridge for connect the native module and js module.
