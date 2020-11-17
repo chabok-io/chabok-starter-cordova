@@ -13,7 +13,7 @@
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",
   "dependencies": {
-    "com.chabokpush.cordova": "^1.0.0",
+    "com.chabokpush.cordova": "^1.2.0",
     "cordova-android": "^8.1.0",
     "cordova-ios": "^5.1.1"
   },
@@ -23,7 +23,10 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
-      "com.chabokpush.cordova": {}
+      "com.chabokpush.cordova": {
+        "CHABOK_ENVIRONMENT": "SANDBOX",
+        "CHABOK_LOGLEVEL": "VERBOSE"
+      }
     },
     "platforms": [
       "android",

@@ -31,7 +31,7 @@
         <framework src="com.android.installreferrer:installreferrer:1.1.1" />
         <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
 
-        <framework src="com.adpdigital.push:chabok-lib:3.4.0" />
+        <framework src="com.adpdigital.push:chabok-lib:3.4.1" />
         <!-- END Add frameworks -->
 
         <config-file parent="/*"
@@ -120,7 +120,7 @@
                 <source url="https://github.com/CocoaPods/Specs.git"/>
             </config>
             <pods use-frameworks="true">
-                <pod name="ChabokPush" spec="~> 2.2.0"/>
+                <pod name="ChabokPush" spec="~> 2.2.1"/>
             </pods>
         </podspec>
     </platform>
